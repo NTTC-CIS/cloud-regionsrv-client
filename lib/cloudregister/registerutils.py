@@ -340,21 +340,20 @@ def get_current_smt():
 # ----------------------------------------------------------------------------
 def get_installed_product_names():
     """Return a list of the names of the products installed on the system"""
-    # Preset special cases
+    product_names = []
+    installed_product_files = glob.glob('/etc/products.d/*.prod')
+    for product_file in installed_product_files:
+        product_xml = open(product_file).read()
+        product_start = product_xml.index('<product ')
+        try:
+            product_tree = etree.fromstring(product_xml[product_start:])
+        except:
+            return product_names
+        product_names.append(product_tree.findall('name')[0].text)
+    
+    # Special cases
     # sle-module-devtools -> sle-module-development-tools | SLE 15
-    product_names = ['sle-module-devtools']
-    try:
-        cmd = subprocess.Popen(
-            ["zypper", "--no-remote", "-x", "products"], stdout=subprocess.PIPE
-        )
-        product_xml = cmd.communicate()
-    except:
-        logging.error('Could not get product list "%s"' % cmd[1])
-        return
-
-    product_tree = etree.fromstring(product_xml[0].decode())
-    for child in product_tree.find("product-list"):
-        product_names.append(child.get('name'))
+    product_names.append('sle-module-devtools')
 
     return product_names
 
