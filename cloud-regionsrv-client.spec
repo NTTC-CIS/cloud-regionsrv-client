@@ -96,6 +96,18 @@ Requires:     python3-dnspython
 %description plugin-azure
 Guest registration plugin for images intended for Microsoft Azure
 
+%package plugin-mcp
+Version:      2.0.0
+License:      LGPL-3.0
+Summary:      MCP Environment Guest Registration Configuration
+Group:        Productivity/Networking/Web/Servers
+Provides:     cloud-regionsrv-client-config
+Provides:     regionsrv-certs
+Conflicts:    otherproviders(cloud-regionsrv-client-config)
+
+%description plugin-mcp
+Guest registration plugin for images intended for MCP
+
 %prep
 %setup -q
 
@@ -159,6 +171,14 @@ mkdir -p %{buildroot}/var/lib/cloudregister
 %files plugin-azure
 %defattr(-,root,root,-)
 %{python3_sitelib}/cloudregister/msft*
+
+%files plugin-mcp
+%defattr(-,root,root,-)
+%{python3_sitelib}/cloudregister/mcp*
+%dir /var/lib/regionService
+%dir /var/lib/regionService/certs
+/var/lib/regionService/certs/*.pem
+%config %{_sysconfdir}/regionserverclnt.cfg
 
 %changelog
 
