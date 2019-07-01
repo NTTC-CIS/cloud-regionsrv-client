@@ -97,7 +97,7 @@ Requires:     python3-dnspython
 Guest registration plugin for images intended for Microsoft Azure
 
 %package plugin-mcp
-Version:      2.0.0
+Version:      1.0.0
 License:      LGPL-3.0
 Summary:      MCP Environment Guest Registration Configuration
 Group:        Productivity/Networking/Web/Servers
@@ -120,6 +120,7 @@ cp -r usr %{buildroot}
 python3 setup.py install --prefix=%{_prefix}  --root=%{buildroot}
 mkdir -p %{buildroot}/var/lib/regionService/certs
 mkdir -p %{buildroot}/var/lib/cloudregister
+cp -r var/lib/regionService/certs/*.pem %{buildroot}/var/lib/regionService/certs/
 
 %pre
 %service_add_pre guestregister.service
@@ -177,7 +178,7 @@ mkdir -p %{buildroot}/var/lib/cloudregister
 %{python3_sitelib}/cloudregister/mcp*
 %dir /var/lib/regionService
 %dir /var/lib/regionService/certs
-/var/lib/regionService/certs/*.pem
+%{_var}/lib/regionService/certs/*.pem
 %config %{_sysconfdir}/regionserverclnt.cfg
 
 %changelog
